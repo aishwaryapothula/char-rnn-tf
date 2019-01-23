@@ -1,2 +1,5 @@
 venv
+hello.txt
+rnn-test.py.ipynb
 *.DS_Store
+.ipynb_checkpoints

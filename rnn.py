@@ -1,4 +1,5 @@
 
+import sys
 import random
 import numpy as np
 import tensorflow as tf
@@ -13,10 +14,11 @@ def one_hot(v):
 
 
 # Data I/O
-data = open('input.txt', 'r').read()  # Use this source file as input for RNN
+file = sys.argv[1]
+data = open(file, 'r').read()  # Use this source file as input for RNN
 chars = sorted(list(set(data)))
 data_size, vocab_size = len(data), len(chars)
-print('Data has %d characters, %d unique.' % (data_size, vocab_size))
+print('Data has %d characters of which %d are unique.' % (data_size, vocab_size))
 char_to_ix = {ch: i for i, ch in enumerate(chars)}
 ix_to_char = {i: ch for i, ch in enumerate(chars)}
 
@@ -24,15 +26,14 @@ ix_to_char = {i: ch for i, ch in enumerate(chars)}
 hidden_size = 100  # hidden layer's size
 seq_length = 25   # number of steps to unroll
 learning_rate = 1e-1
-
 inputs = tf.placeholder(shape=[None, vocab_size],
                         dtype=tf.float32, name="inputs")
 targets = tf.placeholder(
     shape=[None, vocab_size], dtype=tf.float32, name="targets")
 init_state = tf.placeholder(
     shape=[1, hidden_size], dtype=tf.float32, name="state")
-
 initializer = tf.random_normal_initializer(stddev=0.1)
+
 
 with tf.variable_scope("RNN") as scope:
     hs_t = init_state
@@ -63,8 +64,9 @@ loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
 # Minimizer
 minimizer = tf.train.AdamOptimizer()
 grads_and_vars = minimizer.compute_gradients(loss)
+print(grads_and_vars)
 
-# Gradient clipping
+#Gradient Clipping
 grad_clipping = tf.constant(5.0, name="grad_clipping")
 clipped_grads_and_vars = []
 for grad, var in grads_and_vars:
@@ -77,7 +79,9 @@ updates = minimizer.apply_gradients(clipped_grads_and_vars)
 # Session
 sess = tf.Session()
 init = tf.global_variables_initializer()
+writer=tf.summary.FileWriter("aish",sess.graph)
 sess.run(init)
+writer.close()
 
 # Initial values
 n, p = 0, 0
@@ -85,7 +89,7 @@ hprev_val = np.zeros([1, hidden_size])
 
 while True:
     # Initialize
-    if p + seq_length + 1 >= len(data) or n == 0:
+    if p + seq_length+1 >= len(data) or n == 0:
         hprev_val = np.zeros([1, hidden_size])
         p = 0  # reset
 
@@ -131,3 +135,4 @@ while True:
 
     p += seq_length
     n += 1
+
