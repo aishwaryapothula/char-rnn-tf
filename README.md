@@ -4,7 +4,7 @@ Implementation of Vanilla **RNN for Character Level** prediction using TensorFlo
 The Character Level RNN uses as input both the current input and the output of the previous hidden layer to predict 
 the next character in sequence. The outline of the implementation is broadly divided into the following categories
 
-**Import required models**
+**Import required models**\
 **Preparation of I/O data**
 **Defining One-Hot encoding function**
 **Defining Hyperparameters**
