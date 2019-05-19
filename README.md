@@ -17,7 +17,7 @@ the next character in sequence. The outline of the implementation is broadly div
 **Session and run**\
 **Preparing inputs to RNN and Sampling**\
 
-**Result**
+**Result**\
 The output after every 500 iterations is set to be sampled.
 As the iterations increase, the models gradually learns to learn the relations between characters,
 position of white spaces grammar,syntax of sentences.
